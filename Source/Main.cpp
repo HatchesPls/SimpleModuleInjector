@@ -38,7 +38,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In_
 {
     WNDCLASSEX WindowClass = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("SMI_MainWindow"), NULL };
     RegisterClassEx(&WindowClass);
-    MainWindowHandle = CreateWindow(WindowClass.lpszClassName, _T("SMI"), WS_CAPTION | WS_SYSMENU, 100, 100, 500, 150, NULL, NULL, WindowClass.hInstance, NULL);
+    MainWindowHandle = CreateWindow(WindowClass.lpszClassName, _T("SMI - https://github.com/HowYouDoinMate/SimpleModuleInjector"), WS_CAPTION | WS_SYSMENU, 100, 100, 500, 150, NULL, NULL, WindowClass.hInstance, NULL);
 
     if (!CreateDirectXDeviceAndSwapChain(MainWindowHandle))
     {

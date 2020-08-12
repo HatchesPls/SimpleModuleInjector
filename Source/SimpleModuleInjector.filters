@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source Files\GUI">
+      <UniqueIdentifier>{b3b0a04f-fc45-4d22-a3ce-eb9590ba63a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\ImGui">
+      <UniqueIdentifier>{1c9162f2-7b48-409a-9f94-f7d9dc5fb604}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI">
+      <UniqueIdentifier>{3d0882b7-649b-4216-8b1a-217c6466442c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\ImGui">
+      <UniqueIdentifier>{a389ed7b-759a-45ad-af1b-63c21db76875}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Font">
+      <UniqueIdentifier>{5a71c5d7-075d-4981-ad6e-c95d191499ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\Font">
+      <UniqueIdentifier>{a1aacc9e-241e-4d4a-a0cf-2aefd28c9ae2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Loader">
+      <UniqueIdentifier>{0426b027-0fca-40db-8386-4d1b3cad03f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\JsonCPP">
+      <UniqueIdentifier>{78bfff73-4c75-4c76-b51c-80142f98d4ec}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ThirdParty\ImGui\imgui.cpp">
+      <Filter>Source Files\GUI\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\ImGui\imgui_demo.cpp">
+      <Filter>Source Files\GUI\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\ImGui\imgui_draw.cpp">
+      <Filter>Source Files\GUI\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\ImGui\imgui_impl_dx11.cpp">
+      <Filter>Source Files\GUI\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\ImGui\imgui_impl_win32.cpp">
+      <Filter>Source Files\GUI\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\ImGui\imgui_widgets.cpp">
+      <Filter>Source Files\GUI\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Font\Font.cpp">
+      <Filter>Source Files\GUI\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralFunctions.cpp">
+      <Filter>Source Files\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkingFunctions.cpp">
+      <Filter>Source Files\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\JsonCPP\jsoncpp.cpp">
+      <Filter>Source Files\JsonCPP</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ThirdParty\ImGui\imconfig.h">
+      <Filter>Header Files\GUI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\ImGui\imgui.h">
+      <Filter>Header Files\GUI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\ImGui\imgui_impl_dx11.h">
+      <Filter>Header Files\GUI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\ImGui\imgui_impl_win32.h">
+      <Filter>Header Files\GUI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\ImGui\imgui_internal.h">
+      <Filter>Header Files\GUI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\Font.h">
+      <Filter>Header Files\GUI\Font</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

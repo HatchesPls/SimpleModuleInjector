@@ -101,7 +101,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In_
         ImGui::Begin("##MainWindow", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
  
         //Module Select Section
-        ImGui::Text("Module Path:");
+        ImGui::Text("Module Name:");
         ImGui::SameLine();
         if (SelectedModuleFile != NULL) { ImGui::TextWrapped(PathFindFileNameA(SelectedModuleFile)); }
         ImGui::SameLine(ImGui::GetWindowWidth() - 177);

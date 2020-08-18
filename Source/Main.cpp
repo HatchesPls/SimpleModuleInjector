@@ -3,6 +3,7 @@
 #include <shlwapi.h>
 #include <tchar.h>
 #include <sstream>
+#include <filesystem>
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "Shlwapi.lib")
 #include <Tlhelp32.h>
@@ -13,15 +14,15 @@
 
 
 //Definitions
-std::string                             SMI_BUILD                   = "1.0.0.0";
-std::string                             MainWindowTitle             = "SMI - " + SMI_BUILD + " - https://github.com/HowYouDoinMate/SimpleModuleInjector";
-static ID3D11Device*                    g_pd3dDevice                = NULL;
-static IDXGISwapChain*                  g_pSwapChain                = NULL;
-static ID3D11DeviceContext*             g_pd3dDeviceContext         = NULL;
-static ID3D11RenderTargetView*          g_mainRenderTargetView      = NULL;
-char*  SelectedModuleFile                                           = NULL;
-char   TargetProcessNameBufferInput                                   [51];
-std::string PopupNotificationMessage                                = "";
+std::string                             SMI_BUILD = "1.0.0.0";
+std::string                             MainWindowTitle = "SMI - " + SMI_BUILD + " - https://github.com/HowYouDoinMate/SimpleModuleInjector";
+static ID3D11Device* g_pd3dDevice = NULL;
+static IDXGISwapChain* g_pSwapChain = NULL;
+static ID3D11DeviceContext* g_pd3dDeviceContext = NULL;
+static ID3D11RenderTargetView* g_mainRenderTargetView = NULL;
+char* SelectedModuleFile = NULL;
+char   TargetProcessNameBufferInput[51];
+std::string PopupNotificationMessage = "";
 HWND   MainWindowHandle;
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -29,15 +30,40 @@ bool        CreateDirectXDeviceAndSwapChain(HWND hWnd);
 void        CleanupDirectXDeviceAndSwapChain();
 void        CreateRenderTarget();
 void        CleanupRenderTarget();
-char*       ShowSelectFileDialogAndReturnPath();
+char* ShowSelectFileDialogAndReturnPath();
 DWORD       GetProcessIDByName(const std::wstring& ProcessName);
 bool        FileExists(const std::string& fileName);
-void        InjectModule(std::string ModulePath, std::wstring ProcessName);
-
+void        InjectModule(std::string ModulePath, std::wstring ProcessName, bool CMD = false);
+std::string ReturnConfigFilePath();
+std::string ReturnSMIDirectoryPath();
+void        WriteStringToIni(std::string string, std::string file, std::string app, std::string key);
+std::string ReadStringFromIni(std::string file, std::string app, std::string key);
+void        WriteBoolToIni(bool b00l, std::string file, std::string app, std::string key);
+bool        ReadBoolFromIni(std::string file, std::string app, std::string key);
+void        LoadConfig();
 
 
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR pCmdLine, _In_ int nShowCmd)
 {
+    //Read Arguments for console injection
+    LPWSTR* szArgList;
+    int ArgumentCount;
+    szArgList = CommandLineToArgvW(GetCommandLine(), &ArgumentCount);
+    if (szArgList == NULL)
+    {
+        MessageBoxA(NULL, "CommandLineToArgvW() Failed", NULL, MB_OK | MB_ICONERROR);
+        return EXIT_SUCCESS;
+    }
+
+    if (ArgumentCount == 3)
+    {
+        std::wstring ModulePath_LPWSTRToWSTR(szArgList[1]);
+        std::string ModulePathString = std::string(ModulePath_LPWSTRToWSTR.begin(), ModulePath_LPWSTRToWSTR.end());
+        InjectModule(ModulePathString, szArgList[2], true);
+    }
+
+    LocalFree(szArgList);
+
     WNDCLASSEX WindowClass = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("SMI_MainWindow"), NULL };
     RegisterClassEx(&WindowClass);
 
@@ -293,32 +319,149 @@ bool FileExists(const std::string& fileName)
     struct stat buffer;
     return (stat(fileName.c_str(), &buffer) == 0);
 }
-void InjectModule(std::string ModulePath, std::wstring ProcessName)
+void InjectModule(std::string ModulePath, std::wstring ProcessName, bool CMD)
 {
     //Get Process ID from ProcessName
     DWORD processID = GetProcessIDByName(ProcessName);
-    if (!processID) { PopupNotificationMessage = "No Process ID with that Process Name exists"; return; } 
-    if (!FileExists(ModulePath)) { PopupNotificationMessage = "Selected Module Does Not Exist Anymore"; return; }
+    if (!processID) 
+    { 
+        if (CMD)
+        {
+            MessageBoxA(NULL, "No Process ID with that Process Name exists", NULL, MB_OK | MB_ICONERROR);
+        }
+        else
+        {
+            PopupNotificationMessage = "No Process ID with that Process Name exists";
+        }
+        return;    
+    } 
+    if (!FileExists(ModulePath))  
+    { 
+        if (CMD)
+        {
+            MessageBoxA(NULL, "Target Module Does Not Exist", NULL, MB_OK | MB_ICONERROR);
+        }
+        else
+        {
+            PopupNotificationMessage = "Selected Module Does Not Exist Anymore";
+        }
+        return; 
+    }
 
     //Get a handle to the process
     HANDLE Process = OpenProcess(PROCESS_ALL_ACCESS, FALSE, processID);
-    if (!Process) { PopupNotificationMessage = "OpenProcess Failed. Try to run SMJ elevated?";  return; }
+    if (!Process) 
+    { 
+        if (CMD)
+        {
+            MessageBoxA(NULL, "OpenProcess Failed. Try to run SMJ elevated?", NULL, MB_OK | MB_ICONERROR);
+        }
+        else
+        {
+            PopupNotificationMessage = "OpenProcess Failed. Try to run SMJ elevated?";
+        }
+        return;   
+    }
 
     //Allocate Memory Space In Target Process
     LPVOID Memory = LPVOID(VirtualAllocEx(Process, nullptr, MAX_PATH, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE));
-    if (!Memory) { PopupNotificationMessage = "VirtualAllocEx Failed"; return; }
+    if (!Memory) 
+    { 
+        if (CMD)
+        {
+            MessageBoxA(NULL, "VirtualAllocEx Failed", NULL, MB_OK | MB_ICONERROR);
+        }
+        else
+        {
+            PopupNotificationMessage = "VirtualAllocEx Failed";
+        }
+        return; 
+    }
 
     //Write Module Name To Target Process
-    if (!WriteProcessMemory(Process, Memory, ModulePath.c_str(), MAX_PATH, nullptr)) { PopupNotificationMessage = "WriteProcessMemory Failed"; return; }
+    if (!WriteProcessMemory(Process, Memory, ModulePath.c_str(), MAX_PATH, nullptr)) 
+    { 
+        if (CMD)
+        {
+            MessageBoxA(NULL, "WriteProcessMemory Failed", NULL, MB_OK | MB_ICONERROR);
+        }
+        else
+        {
+            PopupNotificationMessage = "WriteProcessMemory Failed";
+        }
+        return; 
+    }
 
     //Start Execution Of Injected Module In Target Process
     HANDLE RemoteThreadHandle = CreateRemoteThread(Process, nullptr, NULL, LPTHREAD_START_ROUTINE(LoadLibraryA), Memory, NULL, nullptr);
-    if (!RemoteThreadHandle) { PopupNotificationMessage = "CreateRemoteThread Failed"; return; }
+    if (!RemoteThreadHandle) 
+    { 
+        if (CMD)
+        {
+            MessageBoxA(NULL, "CreateRemoteThread Failed", NULL, MB_OK | MB_ICONERROR);
+        }
+        else
+        {
+            PopupNotificationMessage = "CreateRemoteThread Failed";
+        }       
+        return; 
+    }
 
     //Close Target Process Handle
     CloseHandle(Process);
 
     //Free the allocated memory.
     VirtualFreeEx(Process, LPVOID(Memory), 0, MEM_RELEASE);
-    PopupNotificationMessage = "Module Successfully Injected In Target Process";
+
+    if (CMD)
+    {
+        MessageBoxA(NULL, "Module Successfully Injected In Target Process", NULL, MB_OK | MB_ICONINFORMATION);
+    }
+    else
+    {
+        PopupNotificationMessage = "Module Successfully Injected In Target Process";
+    }
+}
+
+std::string ReturnConfigFilePath()
+{
+    return ReturnSMIDirectoryPath() + "\\Config.ini";
+}
+
+std::string ReturnSMIDirectoryPath()
+{
+    char CheatModuleFilePath[MAX_PATH];
+    GetModuleFileNameA(NULL, CheatModuleFilePath, MAX_PATH);
+    return std::filesystem::path{ CheatModuleFilePath }.parent_path().string();
+}
+
+
+void WriteStringToIni(std::string string, std::string file, std::string app, std::string key)
+{
+    WritePrivateProfileStringA(app.c_str(), key.c_str(), string.c_str(), file.c_str());
+}
+
+std::string ReadStringFromIni(std::string file, std::string app, std::string key)
+{
+    char buf[100];
+    GetPrivateProfileStringA(app.c_str(), key.c_str(), "NULL", buf, 100, file.c_str());
+    return (std::string)buf;
+}
+
+void WriteBoolToIni(bool b00l, std::string file, std::string app, std::string key)
+{
+    WriteStringToIni(b00l ? "true" : "false", file, app, key);
+}
+
+bool ReadBoolFromIni(std::string file, std::string app, std::string key)
+{
+    return ReadStringFromIni(file, app, key) == "true" ? true : false;
+}
+
+void LoadConfig()
+{
+    if (FileExists(ReturnConfigFilePath()))
+    {
+
+    }
 }

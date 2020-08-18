@@ -1,10 +1,10 @@
 #include <Windows.h>
 #include <d3d11.h>
 #include <shlwapi.h>
-#pragma comment(lib, "d3d11.lib")
-#pragma comment(lib, "Shlwapi.lib")
 #include <tchar.h>
 #include <sstream>
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "Shlwapi.lib")
 #include <Tlhelp32.h>
 #include "ThirdParty/ImGui/imgui.h"
 #include "ThirdParty/ImGui/imgui_impl_win32.h"
@@ -21,7 +21,7 @@ static ID3D11DeviceContext*             g_pd3dDeviceContext         = NULL;
 static ID3D11RenderTargetView*          g_mainRenderTargetView      = NULL;
 char*  SelectedModuleFile                                           = NULL;
 char   TargetProcessNameBufferInput                                   [51];
-std::string PopupNotificationMessage = "";
+std::string PopupNotificationMessage                                = "";
 HWND   MainWindowHandle;
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -36,7 +36,7 @@ void        InjectModule(std::string ModulePath, std::wstring ProcessName);
 
 
 
-int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In_ LPWSTR pCmdLine, _In_ int nCmdShow)
+int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR pCmdLine, _In_ int nShowCmd)
 {
     WNDCLASSEX WindowClass = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("SMI_MainWindow"), NULL };
     RegisterClassEx(&WindowClass);

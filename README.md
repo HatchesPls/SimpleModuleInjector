@@ -2,6 +2,8 @@
 
 Simple Dynamic-link Library Injector For Windows.
 
+![alt text](/preview_image.png)
+
 ## CMD/Arguments Injection
 ```
 SimpleModuleInjector.exe <Path To Module> <Process Name>

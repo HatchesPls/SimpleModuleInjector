@@ -14,7 +14,7 @@
 
 
 //Definitions
-std::string SMI_BUILD = "1.0.0.0";
+std::string SMI_BUILD = "1.0.0.1";
 std::string MainWindowTitle = "SMI - " + SMI_BUILD + " - https://github.com/HowYouDoinMate/SimpleModuleInjector";
 static      ID3D11Device* g_pd3dDevice = NULL;
 static      IDXGISwapChain* g_pSwapChain = NULL;
@@ -45,21 +45,21 @@ void        LoadConfig();
 
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR pCmdLine, _In_ int nShowCmd)
 {
-    LPWSTR* szArgList;
+    LPWSTR* ArgumentList;
     int ArgumentCount;
-    szArgList = CommandLineToArgvW(GetCommandLine(), &ArgumentCount);
-    if (szArgList == NULL)
+    ArgumentList = CommandLineToArgvW(GetCommandLine(), &ArgumentCount);
+    if (ArgumentList == NULL)
     {
         MessageBoxA(NULL, "CommandLineToArgvW Failed", NULL, MB_OK | MB_ICONERROR);
         return EXIT_SUCCESS;
     }
     if (ArgumentCount == 3)
     {
-        std::wstring ModulePath_LPWSTRToWSTR(szArgList[1]);
+        std::wstring ModulePath_LPWSTRToWSTR(ArgumentList[1]);
         std::string ModulePathString = std::string(ModulePath_LPWSTRToWSTR.begin(), ModulePath_LPWSTRToWSTR.end());
-        InjectModule(ModulePathString, szArgList[2], true);
+        InjectModule(ModulePathString, ArgumentList[2], true);
     }
-    LocalFree(szArgList);
+    LocalFree(ArgumentList);
 
 
     WNDCLASSEX WindowClass = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("SMI_MainWindow"), NULL };

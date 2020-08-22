@@ -415,6 +415,10 @@ void InjectModule(std::string ModulePath, std::wstring ProcessName, bool CMD)
     {
         PopupNotificationMessage = "Module Successfully Injected In Target Process";
     }
+    else
+    {
+        std::exit(EXIT_SUCCESS);
+    }
 }
 
 std::string ReturnConfigFilePath()

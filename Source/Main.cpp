@@ -14,23 +14,23 @@
 
 
 //Definitions
-std::string                             SMI_BUILD = "1.0.0.0";
-std::string                             MainWindowTitle = "SMI - " + SMI_BUILD + " - https://github.com/HowYouDoinMate/SimpleModuleInjector";
-static ID3D11Device* g_pd3dDevice = NULL;
-static IDXGISwapChain* g_pSwapChain = NULL;
-static ID3D11DeviceContext* g_pd3dDeviceContext = NULL;
-static ID3D11RenderTargetView* g_mainRenderTargetView = NULL;
-char* SelectedModuleFile = NULL;
-char   TargetProcessNameBufferInput[51];
+std::string SMI_BUILD = "1.0.0.0";
+std::string MainWindowTitle = "SMI - " + SMI_BUILD + " - https://github.com/HowYouDoinMate/SimpleModuleInjector";
+static      ID3D11Device* g_pd3dDevice = NULL;
+static      IDXGISwapChain* g_pSwapChain = NULL;
+static      ID3D11DeviceContext* g_pd3dDeviceContext = NULL;
+static      ID3D11RenderTargetView* g_mainRenderTargetView = NULL;
+char*       SelectedModuleFile = NULL;
+char        TargetProcessNameBufferInput[51];
 std::string PopupNotificationMessage = "";
-HWND   MainWindowHandle;
-LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+HWND        MainWindowHandle;
+LRESULT     WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 bool        CreateDirectXDeviceAndSwapChain(HWND hWnd);
 void        CleanupDirectXDeviceAndSwapChain();
 void        CreateRenderTarget();
 void        CleanupRenderTarget();
-char* ShowSelectFileDialogAndReturnPath();
+char*       ShowSelectFileDialogAndReturnPath();
 DWORD       GetProcessIDByName(const std::wstring& ProcessName);
 bool        FileExists(const std::string& fileName);
 void        InjectModule(std::string ModulePath, std::wstring ProcessName, bool CMD = false);
@@ -45,24 +45,22 @@ void        LoadConfig();
 
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR pCmdLine, _In_ int nShowCmd)
 {
-    //Read Arguments for console injection
     LPWSTR* szArgList;
     int ArgumentCount;
     szArgList = CommandLineToArgvW(GetCommandLine(), &ArgumentCount);
     if (szArgList == NULL)
     {
-        MessageBoxA(NULL, "CommandLineToArgvW() Failed", NULL, MB_OK | MB_ICONERROR);
+        MessageBoxA(NULL, "CommandLineToArgvW Failed", NULL, MB_OK | MB_ICONERROR);
         return EXIT_SUCCESS;
     }
-
     if (ArgumentCount == 3)
     {
         std::wstring ModulePath_LPWSTRToWSTR(szArgList[1]);
         std::string ModulePathString = std::string(ModulePath_LPWSTRToWSTR.begin(), ModulePath_LPWSTRToWSTR.end());
         InjectModule(ModulePathString, szArgList[2], true);
     }
-
     LocalFree(szArgList);
+
 
     WNDCLASSEX WindowClass = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("SMI_MainWindow"), NULL };
     RegisterClassEx(&WindowClass);
@@ -413,11 +411,7 @@ void InjectModule(std::string ModulePath, std::wstring ProcessName, bool CMD)
     //Free the allocated memory.
     VirtualFreeEx(Process, LPVOID(Memory), 0, MEM_RELEASE);
 
-    if (CMD)
-    {
-        MessageBoxA(NULL, "Module Successfully Injected In Target Process", NULL, MB_OK | MB_ICONINFORMATION);
-    }
-    else
+    if (!CMD)
     {
         PopupNotificationMessage = "Module Successfully Injected In Target Process";
     }

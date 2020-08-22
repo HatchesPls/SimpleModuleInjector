@@ -14,15 +14,15 @@
 
 
 //Definitions
-std::string SMI_BUILD = "1.0.0.1";
-std::string MainWindowTitle = "SMI - " + SMI_BUILD + " - https://github.com/HowYouDoinMate/SimpleModuleInjector";
-static      ID3D11Device* g_pd3dDevice = NULL;
-static      IDXGISwapChain* g_pSwapChain = NULL;
-static      ID3D11DeviceContext* g_pd3dDeviceContext = NULL;
-static      ID3D11RenderTargetView* g_mainRenderTargetView = NULL;
-char*       SelectedModuleFile = NULL;
-char        TargetProcessNameBufferInput[51];
-std::string PopupNotificationMessage = "";
+std::string SMI_BUILD                                       = "1.0.0.1";
+std::string MainWindowTitle                                 = "SMI - " + SMI_BUILD + " - https://github.com/HowYouDoinMate/SimpleModuleInjector";
+static      ID3D11Device* g_pd3dDevice                      = NULL;
+static      IDXGISwapChain* g_pSwapChain                    = NULL;
+static      ID3D11DeviceContext* g_pd3dDeviceContext        = NULL;
+static      ID3D11RenderTargetView* g_mainRenderTargetView  = NULL;
+char*       SelectedModuleFile                              = NULL;
+char        TargetProcessNameBufferInput                    [51];
+std::string PopupNotificationMessage                        = "";
 HWND        MainWindowHandle;
 LRESULT     WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

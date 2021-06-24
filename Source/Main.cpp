@@ -79,12 +79,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     ImGui_ImplWin32_Init(MainWindowHandle);
     ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
 
-    //Load Roboto Font From Array
-   // ImFontConfig FontConfig;
-    //FontConfig.FontDataOwnedByAtlas = false;
-    //ImGui::GetIO().Fonts->AddFontFromMemoryTTF(const_cast<std::uint8_t*>(RobotoFont), sizeof(RobotoFont), 23.f, &FontConfig);
     io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\ARLRDBD.ttf", 22.f);
-    //ImGui::GetIO().Fonts->AddFontDefault();
 
     MSG Message;
     ZeroMemory(&Message, sizeof(Message));

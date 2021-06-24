@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="ThirdParty\ImGui\imgui.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
@@ -16,29 +17,36 @@
     <ClCompile Include="ThirdParty\ImGui\imgui_widgets.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ThirdParty\ImGui\imgui_internal.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ThirdParty\ImGui\imgui_impl_win32.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ThirdParty\ImGui\imgui_impl_dx11.h">
+    <Filter Include="ImGui">
+      <UniqueIdentifier>{a718a0e4-daa0-4b7e-a075-97a8dc1c445e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ThirdParty\ImGui\imconfig.h">
       <Filter>ImGui</Filter>
     </ClInclude>
     <ClInclude Include="ThirdParty\ImGui\imgui.h">
       <Filter>ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="ThirdParty\ImGui\imconfig.h">
+    <ClInclude Include="ThirdParty\ImGui\imgui_impl_dx11.h">
       <Filter>ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Font.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="ImGui">
-      <UniqueIdentifier>{443064b8-80c8-415c-ae19-b2112b5e0461}</UniqueIdentifier>
-    </Filter>
+    <ClInclude Include="ThirdParty\ImGui\imgui_impl_win32.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\ImGui\imgui_internal.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\ImGui\imstb_rectpack.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\ImGui\imstb_textedit.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\ImGui\imstb_truetype.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -37,6 +37,7 @@
     <LibraryPath>$(SolutionDir)ThirdParty;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)Build\</OutDir>
     <IntDir>$(SolutionDir)Build\Intermediate\</IntDir>
+    <TargetName>SimpleModuleInjector</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -51,6 +52,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
       <DebugInformationFormat>None</DebugInformationFormat>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -81,12 +83,14 @@
     <ClCompile Include="ThirdParty\ImGui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Font.h" />
     <ClInclude Include="ThirdParty\ImGui\imconfig.h" />
     <ClInclude Include="ThirdParty\ImGui\imgui.h" />
     <ClInclude Include="ThirdParty\ImGui\imgui_impl_dx11.h" />
     <ClInclude Include="ThirdParty\ImGui\imgui_impl_win32.h" />
     <ClInclude Include="ThirdParty\ImGui\imgui_internal.h" />
+    <ClInclude Include="ThirdParty\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="ThirdParty\ImGui\imstb_textedit.h" />
+    <ClInclude Include="ThirdParty\ImGui\imstb_truetype.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

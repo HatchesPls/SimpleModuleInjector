@@ -3,6 +3,7 @@
 #include <shlwapi.h>
 #include <tchar.h>
 #include <sstream>
+#include <iostream>
 #include <filesystem>
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "Shlwapi.lib")
@@ -10,11 +11,10 @@
 #include "ThirdParty/ImGui/imgui.h"
 #include "ThirdParty/ImGui/imgui_impl_win32.h"
 #include "ThirdParty/ImGui/imgui_impl_dx11.h"
-#include "Font.h"
 
 
 //Definitions
-std::string SMI_BUILD                                       = "1.0.0.1";
+std::string SMI_BUILD                                       = "1.0.0.2";
 std::string MainWindowTitle                                 = "SMI - " + SMI_BUILD + " - https://github.com/HowYouDoinMate/SimpleModuleInjector";
 static      ID3D11Device* g_pd3dDevice                      = NULL;
 static      IDXGISwapChain* g_pSwapChain                    = NULL;
@@ -34,13 +34,6 @@ char*       ShowSelectFileDialogAndReturnPath();
 DWORD       GetProcessIDByName(const std::wstring& ProcessName);
 bool        FileExists(const std::string& fileName);
 void        InjectModule(std::string ModulePath, std::wstring ProcessName, bool CMD = false);
-std::string ReturnConfigFilePath();
-std::string ReturnSMIDirectoryPath();
-void        WriteStringToIni(std::string string, std::string file, std::string app, std::string key);
-std::string ReadStringFromIni(std::string file, std::string app, std::string key);
-void        WriteBoolToIni(bool b00l, std::string file, std::string app, std::string key);
-bool        ReadBoolFromIni(std::string file, std::string app, std::string key);
-void        LoadConfig();
 
 
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR pCmdLine, _In_ int nShowCmd)
@@ -87,10 +80,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
 
     //Load Roboto Font From Array
-    ImFontConfig FontConfig;
-    FontConfig.FontDataOwnedByAtlas = false;
-    ImGui::GetIO().Fonts->AddFontFromMemoryTTF(const_cast<std::uint8_t*>(RobotoFont), sizeof(RobotoFont), 23.f, &FontConfig);
-    ImGui::GetIO().Fonts->AddFontDefault();
+   // ImFontConfig FontConfig;
+    //FontConfig.FontDataOwnedByAtlas = false;
+    //ImGui::GetIO().Fonts->AddFontFromMemoryTTF(const_cast<std::uint8_t*>(RobotoFont), sizeof(RobotoFont), 23.f, &FontConfig);
+    io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\ARLRDBD.ttf", 22.f);
+    //ImGui::GetIO().Fonts->AddFontDefault();
 
     MSG Message;
     ZeroMemory(&Message, sizeof(Message));
@@ -132,11 +126,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         ImGui::Text("Module Name:");
         ImGui::SameLine();
         if (SelectedModuleFile != NULL) { ImGui::TextWrapped(PathFindFileNameA(SelectedModuleFile)); }
-        ImGui::SameLine(ImGui::GetWindowWidth() - 177);
-        if (ImGui::SmallButton("Pick Module File")) { SelectedModuleFile = ShowSelectFileDialogAndReturnPath(); }
+        ImGui::SameLine(ImGui::GetWindowWidth() - 200);
+        if (ImGui::SmallButton("Select Module File")) { SelectedModuleFile = ShowSelectFileDialogAndReturnPath(); }
 
         //Process Name Input Section
-        ImGui::Text("Process Name:");
+        ImGui::Text("Process Name/ID:");
         ImGui::SameLine();
         ImGui::InputText("##ProcessNameInput", TargetProcessNameBufferInput, IM_ARRAYSIZE(TargetProcessNameBufferInput), ImGuiInputTextFlags_CharsNoBlank);
         ImGui::Dummy(ImVec2(0, 5));
@@ -325,7 +319,8 @@ void InjectModule(std::string ModulePath, std::wstring ProcessName, bool CMD)
     { 
         if (CMD)
         {
-            MessageBoxA(NULL, "No Process ID with that Process Name exists", NULL, MB_OK | MB_ICONERROR);
+            //MessageBoxA(NULL, "No Process ID with that Process Name exists", NULL, MB_OK | MB_ICONERROR);
+            std::cout << "[!] Invalid process name" << std::endl;
         }
         else
         {
@@ -352,11 +347,11 @@ void InjectModule(std::string ModulePath, std::wstring ProcessName, bool CMD)
     { 
         if (CMD)
         {
-            MessageBoxA(NULL, "OpenProcess Failed. Try to run SMJ elevated?", NULL, MB_OK | MB_ICONERROR);
+            MessageBoxA(NULL, "OpenProcess Failed. Try to run SMI elevated?", NULL, MB_OK | MB_ICONERROR);
         }
         else
         {
-            PopupNotificationMessage = "OpenProcess Failed. Try to run SMJ elevated?";
+            PopupNotificationMessage = "OpenProcess Failed. Try to run SMI elevated?";
         }
         return;   
     }
@@ -418,48 +413,5 @@ void InjectModule(std::string ModulePath, std::wstring ProcessName, bool CMD)
     else
     {
         std::exit(EXIT_SUCCESS);
-    }
-}
-
-std::string ReturnConfigFilePath()
-{
-    return ReturnSMIDirectoryPath() + "\\Config.ini";
-}
-
-std::string ReturnSMIDirectoryPath()
-{
-    char CheatModuleFilePath[MAX_PATH];
-    GetModuleFileNameA(NULL, CheatModuleFilePath, MAX_PATH);
-    return std::filesystem::path{ CheatModuleFilePath }.parent_path().string();
-}
-
-
-void WriteStringToIni(std::string string, std::string file, std::string app, std::string key)
-{
-    WritePrivateProfileStringA(app.c_str(), key.c_str(), string.c_str(), file.c_str());
-}
-
-std::string ReadStringFromIni(std::string file, std::string app, std::string key)
-{
-    char buf[100];
-    GetPrivateProfileStringA(app.c_str(), key.c_str(), "NULL", buf, 100, file.c_str());
-    return (std::string)buf;
-}
-
-void WriteBoolToIni(bool b00l, std::string file, std::string app, std::string key)
-{
-    WriteStringToIni(b00l ? "true" : "false", file, app, key);
-}
-
-bool ReadBoolFromIni(std::string file, std::string app, std::string key)
-{
-    return ReadStringFromIni(file, app, key) == "true" ? true : false;
-}
-
-void LoadConfig()
-{
-    if (FileExists(ReturnConfigFilePath()))
-    {
-
     }
 }

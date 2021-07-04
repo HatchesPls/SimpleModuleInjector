@@ -15,7 +15,7 @@
 
 //Definitions
 std::string SMI_BUILD                                       = "1.0.0.2";
-std::string MainWindowTitle                                 = "SMI - " + SMI_BUILD + " - https://github.com/HowYouDoinMate/SimpleModuleInjector";
+std::string MainWindowTitle                                 = "SMI - " + SMI_BUILD + " - https://github.com/HatchesPls/SimpleModuleInjector";
 static      ID3D11Device* g_pd3dDevice                      = NULL;
 static      IDXGISwapChain* g_pSwapChain                    = NULL;
 static      ID3D11DeviceContext* g_pd3dDeviceContext        = NULL;
@@ -126,7 +126,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         if (ImGui::SmallButton("Select Module File")) { SelectedModuleFile = ShowSelectFileDialogAndReturnPath(); }
 
         //Process Name Input Section
-        ImGui::Text("Process Name/ID:");
+        ImGui::Text("Process Name:");
         ImGui::SameLine();
         ImGui::InputText("##ProcessNameInput", TargetProcessNameBufferInput, IM_ARRAYSIZE(TargetProcessNameBufferInput), ImGuiInputTextFlags_CharsNoBlank);
         ImGui::Dummy(ImVec2(0, 5));

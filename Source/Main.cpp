@@ -36,6 +36,7 @@ bool        FileExists(const std::string& fileName);
 void        InjectModule(std::string ModulePath, std::wstring ProcessName, bool CMD = false);
 
 
+
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR pCmdLine, _In_ int nShowCmd)
 {
     LPWSTR* ArgumentList;
@@ -79,7 +80,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     ImGui_ImplWin32_Init(MainWindowHandle);
     ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
 
-    io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\ARLRDBD.ttf", 22.f);
+    io.Fonts->AddFontFromFileTTF(strcat(getenv("SystemDrive"), "\\Windows\\Fonts\\ARLRDBD.ttf"), 22.f);
 
     MSG Message;
     ZeroMemory(&Message, sizeof(Message));

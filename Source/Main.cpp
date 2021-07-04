@@ -14,7 +14,7 @@
 
 
 //Definitions
-std::string SMI_BUILD                                       = "1.0.0.2";
+std::string SMI_BUILD                                       = "1.0.0.3";
 std::string MainWindowTitle                                 = "SMI - " + SMI_BUILD + " - https://github.com/HatchesPls/SimpleModuleInjector";
 static      ID3D11Device* g_pd3dDevice                      = NULL;
 static      IDXGISwapChain* g_pSwapChain                    = NULL;

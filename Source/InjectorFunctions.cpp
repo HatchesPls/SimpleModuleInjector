@@ -1,6 +1,11 @@
 #include "Header/Main.h"
 
-bool Injector::InjectorFunctions::FileExists(const std::string& fileName)
+void Injector::InjectorFunctions::Loop()
+{
+    
+}
+
+bool Injector::InjectorFunctions::FileOrDirectoryExists(const std::string& fileName)
 {
     if (std::filesystem::exists(fileName))
     {
@@ -17,14 +22,8 @@ void Injector::InjectorFunctions::InjectModule(std::string ModulePath, std::wstr
         Injector::UI::PopupNotificationMessage = "Invalid Process Name";
         return;
     }
-    if (!FileExists(ModulePath))
-    {
-        Injector::UI::PopupNotificationMessage = "Selected Module Does Not Exist Anymore";
-        return;
-    }
-
-    //Get a handle to the process
-    HANDLE Process = OpenProcess(PROCESS_ALL_ACCESS, FALSE, TargetProcessID);
+  
+    HANDLE Process = OpenProcess(PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION | PROCESS_VM_READ | PROCESS_VM_WRITE | PROCESS_VM_OPERATION, FALSE, TargetProcessID);
     if (!Process)
     {
         if (GetLastError() == ERROR_INVALID_PARAMETER)
@@ -38,34 +37,45 @@ void Injector::InjectorFunctions::InjectModule(std::string ModulePath, std::wstr
         return;
     }
 
-    //Allocate Memory Space In Target Process
-    LPVOID Memory = LPVOID(VirtualAllocEx(Process, nullptr, MAX_PATH, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE));
+    LPVOID Memory = LPVOID(VirtualAllocEx(Process, NULL, size(ModulePath), MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE));
     if (!Memory)
     {
         Injector::UI::PopupNotificationMessage = "VirtualAllocEx() Failed";
         return;
     }
 
-    //Write Module Name To Target Process
-    if (!WriteProcessMemory(Process, Memory, ModulePath.c_str(), MAX_PATH, nullptr))
+    if (!WriteProcessMemory(Process, Memory, ModulePath.c_str(), size(ModulePath), NULL))
     {
         Injector::UI::PopupNotificationMessage = "WriteProcessMemory() Failed";
         return;
     }
 
-    //Start Execution Of Injected Module In Target Process
-    HANDLE RemoteThreadHandle = CreateRemoteThread(Process, nullptr, NULL, LPTHREAD_START_ROUTINE(LoadLibraryA), Memory, NULL, nullptr);
+    HANDLE RemoteThreadHandle = CreateRemoteThread(Process, NULL, NULL, LPTHREAD_START_ROUTINE(LoadLibraryA), Memory, NULL, NULL);
     if (!RemoteThreadHandle)
     {
         Injector::UI::PopupNotificationMessage = "CreateRemoteThread() Failed";
         return;
     }
-
-    //Close Handles
+    WaitForSingleObject(RemoteThreadHandle, INFINITE);
+    DWORD RThreadExitCode = 0;
+    GetExitCodeThread(RemoteThreadHandle, &RThreadExitCode);
     CloseHandle(RemoteThreadHandle);
+
+    if (!VirtualFreeEx(Process, Memory, NULL, MEM_RELEASE))
+    {
+        Injector::UI::PopupNotificationMessage = "VirtualFreeEx() Failed";
+        return;
+    }
     CloseHandle(Process);
 
-    Injector::UI::PopupNotificationMessage = "Module Successfully Injected";
+    if (!RThreadExitCode)
+    {
+        Injector::UI::PopupNotificationMessage = "Injecting Module Failed";
+    }
+    else
+    {
+        Injector::UI::PopupNotificationMessage = "Module Successfully Injected";
+    }
 }
 
 DWORD Injector::InjectorFunctions::GetProcessIDByName(const std::wstring& ProcessName)

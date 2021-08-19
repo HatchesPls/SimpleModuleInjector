@@ -5,6 +5,7 @@ IDXGISwapChain* Injector::UI::g_pSwapChain = NULL;
 ID3D11DeviceContext* Injector::UI::g_pd3dDeviceContext = NULL;
 ID3D11RenderTargetView* Injector::UI::g_mainRenderTargetView = NULL;
 std::string Injector::UI::PopupNotificationMessage;
+char* Injector::UI::SelectedModuleFile = NULL;
 
 bool Injector::UI::CreateDirectXDeviceAndSwapChain(HWND hWnd)
 {

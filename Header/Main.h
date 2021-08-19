@@ -23,8 +23,9 @@ namespace Injector
 {
 	namespace InjectorFunctions
 	{
+		void Loop();
 		DWORD GetProcessIDByName(const std::wstring& ProcessName);
-		bool FileExists(const std::string& fileName);
+		bool FileOrDirectoryExists(const std::string& fileName);
 		void InjectModule(std::string ModulePath, std::wstring ProcessName, int ProcessID);
 		bool FileHasDOSSignature(char* TargetFilePath);
 	}
@@ -34,7 +35,7 @@ namespace Injector
 		extern IDXGISwapChain* g_pSwapChain;
 		extern ID3D11DeviceContext* g_pd3dDeviceContext;
 		extern ID3D11RenderTargetView* g_mainRenderTargetView;
-		static char* SelectedModuleFile = NULL;
+		extern char* SelectedModuleFile;
 		static char TargetProcessNameOrIDBufferInput[51];
 		extern std::string PopupNotificationMessage;
 		static HWND MainWindowHandle;

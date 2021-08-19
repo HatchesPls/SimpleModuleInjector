@@ -1,35 +1,37 @@
 #include "Header/Main.h"
 
+using namespace Injector;
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR pCmdLine, _In_ int nShowCmd)
 {
-    WNDCLASSEX WindowClass = { sizeof(WNDCLASSEX), CS_CLASSDC, Injector::UI::WndProc, 0L, 0L, GetModuleHandle(NULL), LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1)), NULL, NULL, NULL, _T("SMI_MainWindow"), NULL };
+    WNDCLASSEX WindowClass = { sizeof(WNDCLASSEX), CS_CLASSDC, UI::WndProc, 0L, 0L, GetModuleHandle(NULL), LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1)), NULL, NULL, NULL, _T("SMI_MainWindow"), NULL };
     RegisterClassEx(&WindowClass);
 
-    Injector::UI::MainWindowHandle = CreateWindow(WindowClass.lpszClassName, L"Simple Module Injector", WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, 100, 100, 500, 188, NULL, NULL, WindowClass.hInstance, NULL);
+    UI::MainWindowHandle = CreateWindow(WindowClass.lpszClassName, L"Simple Module Injector", WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, 100, 100, 500, 188, NULL, NULL, WindowClass.hInstance, NULL);
 
-    if (!Injector::UI::CreateDirectXDeviceAndSwapChain(Injector::UI::MainWindowHandle))
+    if (!UI::CreateDirectXDeviceAndSwapChain(UI::MainWindowHandle))
     {
-        MessageBoxA(Injector::UI::MainWindowHandle, "Failed to create Direct3D device", NULL, MB_OK | MB_ICONERROR);
-        Injector::UI::CleanupDirectXDeviceAndSwapChain();
+        MessageBoxA(UI::MainWindowHandle, "Failed to create Direct3D device", NULL, MB_OK | MB_ICONERROR);
+        UI::CleanupDirectXDeviceAndSwapChain();
         UnregisterClass(WindowClass.lpszClassName, WindowClass.hInstance);
         return EXIT_FAILURE;
     }
 
     //Show Window
-    ShowWindow(Injector::UI::MainWindowHandle, SW_NORMAL);
+    ShowWindow(UI::MainWindowHandle, SW_NORMAL);
 
     //Initialize imGui
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     io.IniFilename = NULL;
-    ImGui_ImplWin32_Init(Injector::UI::MainWindowHandle);
-    ImGui_ImplDX11_Init(Injector::UI::g_pd3dDevice, Injector::UI::g_pd3dDeviceContext);
+    ImGui_ImplWin32_Init(UI::MainWindowHandle);
+    ImGui_ImplDX11_Init(UI::g_pd3dDevice, UI::g_pd3dDeviceContext);
     io.Fonts->AddFontFromFileTTF(strcat(getenv("SystemDrive"), "\\Windows\\Fonts\\Verdana.ttf"), 23.f);
 
     //Window Loop
     MSG Message = { 0 };
     while (Message.message != WM_QUIT)
     {
+        InjectorFunctions::Loop();
         if (PeekMessage(&Message, NULL, 0U, 0U, PM_REMOVE)) { TranslateMessage(&Message); DispatchMessage(&Message); continue; }
 
         //Start ImGui Frame
@@ -49,15 +51,15 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(ImColor(0, 0, 0, 255)));
 
         //Show Popup Notification Loop
-        if (!Injector::UI::PopupNotificationMessage.empty())
+        if (!UI::PopupNotificationMessage.empty())
         {
             ImGui::OpenPopup("###PopupNotification");
             if (ImGui::BeginPopupModal("###PopupNotification", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar))
             {
-                ImGui::TextWrapped(Injector::UI::PopupNotificationMessage.c_str());
+                ImGui::TextWrapped(UI::PopupNotificationMessage.c_str());
                 if (ImGui::Button("OK", ImVec2(400, 0))) 
                 {
-                    Injector::UI::PopupNotificationMessage.clear();
+                    UI::PopupNotificationMessage.clear();
                     ImGui::CloseCurrentPopup();
                 }
             }
@@ -71,20 +73,20 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         //Module Select Section
         ImGui::Text("Module Name:");
         ImGui::SameLine();
-        if (Injector::UI::SelectedModuleFile != NULL) { ImGui::TextWrapped(PathFindFileNameA(Injector::UI::SelectedModuleFile)); }
+        if (UI::SelectedModuleFile != NULL) { ImGui::TextWrapped(PathFindFileNameA(UI::SelectedModuleFile)); }
         ImGui::SameLine(ImGui::GetWindowWidth() - 160);
         if (ImGui::SmallButton("Select Module")) 
         {
-            char* SelectedFile = Injector::UI::ShowSelectFileDialogAndReturnPath();
+            char* SelectedFile = UI::ShowSelectFileDialogAndReturnPath();
             if (SelectedFile != NULL)
             {
-                if (Injector::InjectorFunctions::FileHasDOSSignature(SelectedFile))
+                if (InjectorFunctions::FileHasDOSSignature(SelectedFile))
                 {
-                    Injector::UI::SelectedModuleFile = SelectedFile;
+                    UI::SelectedModuleFile = SelectedFile;
                 }
                 else
                 {
-                    Injector::UI::PopupNotificationMessage = "Selected file is not an injectable & valid NT executable";
+                    UI::PopupNotificationMessage = "Selected file is not an injectable nor a valid NT executable";
                 }
             }
         }
@@ -93,32 +95,32 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         ImGui::Text("Process Name/ID:");
         ImGui::SameLine();
         ImGui::PushItemWidth(292);
-        ImGui::InputText("##ProcessNameOrIDInput", Injector::UI::TargetProcessNameOrIDBufferInput, IM_ARRAYSIZE(Injector::UI::TargetProcessNameOrIDBufferInput), ImGuiInputTextFlags_CharsNoBlank);
+        ImGui::InputText("##ProcessNameOrIDInput", UI::TargetProcessNameOrIDBufferInput, IM_ARRAYSIZE(UI::TargetProcessNameOrIDBufferInput), ImGuiInputTextFlags_CharsNoBlank);
         ImGui::Dummy(ImVec2(0, 5));
         if (ImGui::Button("Inject module", ImVec2(470, 35)))
         {
-            if (!Injector::UI::SelectedModuleFile)
+            if (!UI::SelectedModuleFile)
             {
-               Injector::UI::PopupNotificationMessage = "You must select a module to inject";
+               UI::PopupNotificationMessage = "You must select a module to inject";
             }
             else
             {
-                std::string TargetProcessNameString(Injector::UI::TargetProcessNameOrIDBufferInput);
+                std::string TargetProcessNameString(UI::TargetProcessNameOrIDBufferInput);
                 if (!TargetProcessNameString.empty())
                 {
                     if (std::all_of(TargetProcessNameString.begin(), TargetProcessNameString.end(), isdigit))
                     {
-                        Injector::InjectorFunctions::InjectModule(Injector::UI::SelectedModuleFile, L"", std::stoi(TargetProcessNameString));
+                        InjectorFunctions::InjectModule(UI::SelectedModuleFile, L"", std::stoi(TargetProcessNameString));
                     }
                     else
                     {
                         std::wstring ProcessNameWS(TargetProcessNameString.begin(), TargetProcessNameString.end());
-                        Injector::InjectorFunctions::InjectModule(Injector::UI::SelectedModuleFile, ProcessNameWS, NULL);
+                        InjectorFunctions::InjectModule(UI::SelectedModuleFile, ProcessNameWS, NULL);
                     }
                 }
                 else
                 {
-                    Injector::UI::PopupNotificationMessage = "You must provide a process name/id";
+                    UI::PopupNotificationMessage = "You must provide a process name/id";
                 }
             }
         }
@@ -141,11 +143,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
         ImGui::End();
         ImGui::Render();
-        Injector::UI::g_pd3dDeviceContext->OMSetRenderTargets(1, &Injector::UI::g_mainRenderTargetView, NULL);
+        UI::g_pd3dDeviceContext->OMSetRenderTargets(1, &UI::g_mainRenderTargetView, NULL);
         ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
         static UINT presentFlags = 0;
-        if (Injector::UI::g_pSwapChain->Present(1, presentFlags) == DXGI_STATUS_OCCLUDED)
+        if (UI::g_pSwapChain->Present(1, presentFlags) == DXGI_STATUS_OCCLUDED)
         {
             presentFlags = DXGI_PRESENT_TEST;
             Sleep(50);
@@ -159,8 +161,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     ImGui_ImplDX11_Shutdown();
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
-    Injector::UI::CleanupDirectXDeviceAndSwapChain();
-    DestroyWindow(Injector::UI::MainWindowHandle);
+    UI::CleanupDirectXDeviceAndSwapChain();
+    DestroyWindow(UI::MainWindowHandle);
     UnregisterClass(WindowClass.lpszClassName, WindowClass.hInstance);
     return EXIT_SUCCESS;
 }

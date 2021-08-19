@@ -2,7 +2,13 @@
 
 void Injector::InjectorFunctions::Loop()
 {
-    
+    if (UI::SelectedModuleFile != NULL)
+    {
+        if (!FileOrDirectoryExists(UI::SelectedModuleFile))
+        {
+            UI::SelectedModuleFile = NULL;
+        }
+    }
 }
 
 bool Injector::InjectorFunctions::FileOrDirectoryExists(const std::string& fileName)

@@ -123,10 +123,14 @@ bool Injector::InjectorFunctions::FileHasDOSSignature(char* TargetFilePath)
             {
                 if (dosHeader->e_magic == IMAGE_DOS_SIGNATURE)
                 {
+                    CloseHandle(hFile);
+                    CloseHandle(hMapObject);
                     return true;
                 }
                 else
                 {
+                    CloseHandle(hFile);
+                    CloseHandle(hMapObject);
                     return false;
                 }
             }

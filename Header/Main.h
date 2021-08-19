@@ -46,5 +46,6 @@ namespace Injector
 		void CreateRenderTarget();
 		void CleanupRenderTarget();
 		char* ShowSelectFileDialogAndReturnPath();
+		void SetImGuiStyles();
 	}
 }

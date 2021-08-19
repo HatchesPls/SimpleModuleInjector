@@ -78,7 +78,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
                 }
                 else
                 {
-                    UI::PopupNotificationMessage = "Selected file is not an injectable nor a valid NT executable";
+                    UI::PopupNotificationMessage = "Selected file is not an valid NT executable";
                 }
             }
         }

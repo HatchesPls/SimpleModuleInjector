@@ -15,6 +15,7 @@
 #include "ThirdParty/ImGui/imgui_impl_dx11.h"
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "Shlwapi.lib")
+#pragma comment(lib, "Comdlg32.lib")
 #include "resource.h"
 
 static const std::string SMI_BUILD = "1.0.0.3";

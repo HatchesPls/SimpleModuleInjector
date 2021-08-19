@@ -47,18 +47,20 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0, 0, 205, 255)));
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(0, 0, 205, 255)));
         ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(ImColor(50, 50, 50, 255)));
-    
+        ImGui::PushStyleColor(ImGuiCol_TitleBgActive, ImVec4(ImColor(0, 0, 205, 255)));
+        ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(ImColor(0, 0, 0, 255)));
+
         //Show Popup Notification Loop
         if (!Injector::UI::PopupNotificationMessage.empty())
         {
-            ImGui::OpenPopup("PopupNotification");
-            if (ImGui::BeginPopupModal("PopupNotification", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar))
+            ImGui::OpenPopup("Alert###PopupNotification");
+            if (ImGui::BeginPopupModal("Alert###PopupNotification", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar))
             {
                 ImGui::TextWrapped(Injector::UI::PopupNotificationMessage.c_str());
                 if (ImGui::Button("OK", ImVec2(400, 0))) 
-                { 
+                {
+                    Injector::UI::PopupNotificationMessage.clear();
                     ImGui::CloseCurrentPopup(); 
-                    Injector::UI::PopupNotificationMessage.clear(); 
                 }
             }
         }

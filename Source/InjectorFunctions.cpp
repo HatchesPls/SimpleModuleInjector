@@ -14,7 +14,7 @@ void Injector::InjectorFunctions::InjectModule(std::string ModulePath, std::wstr
     DWORD TargetProcessID = ProcessName.empty() ? ProcessID : GetProcessIDByName(ProcessName);
     if (!TargetProcessID)
     {
-        Injector::UI::PopupNotificationMessage = "No Process ID with that Process Name exists";
+        Injector::UI::PopupNotificationMessage = "Invalid Process Name";
         return;
     }
     if (!FileExists(ModulePath))

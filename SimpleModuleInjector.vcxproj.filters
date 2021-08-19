@@ -47,7 +47,6 @@
     <ClInclude Include="Header\Main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="ThirdParty\ImGui\imconfig.h">
       <Filter>ImGui</Filter>
     </ClInclude>
@@ -72,8 +71,12 @@
     <ClInclude Include="ThirdParty\ImGui\imstb_truetype.h">
       <Filter>ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SimpleModuleInjector.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Icon.ico" />
   </ItemGroup>
 </Project>

@@ -15,6 +15,7 @@
 #include "ThirdParty/ImGui/imgui_impl_dx11.h"
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "Shlwapi.lib")
+#include "resource.h"
 
 static const std::string SMI_BUILD = "1.0.0.3";
 
@@ -33,7 +34,6 @@ namespace Injector
 		extern IDXGISwapChain* g_pSwapChain;
 		extern ID3D11DeviceContext* g_pd3dDeviceContext;
 		extern ID3D11RenderTargetView* g_mainRenderTargetView;
-		static const std::string MainWindowTitle = "SMI - https://github.com/HatchesPls/SimpleModuleInjector";
 		static char* SelectedModuleFile = NULL;
 		static char TargetProcessNameOrIDBufferInput[51];
 		extern std::string PopupNotificationMessage;

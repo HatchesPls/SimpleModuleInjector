@@ -2,11 +2,10 @@
 
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR pCmdLine, _In_ int nShowCmd)
 {
-    WNDCLASSEX WindowClass = { sizeof(WNDCLASSEX), CS_CLASSDC, Injector::UI::WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("SMI_MainWindow"), NULL };
+    WNDCLASSEX WindowClass = { sizeof(WNDCLASSEX), CS_CLASSDC, Injector::UI::WndProc, 0L, 0L, GetModuleHandle(NULL), LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1)), NULL, NULL, NULL, _T("SMI_MainWindow"), NULL };
     RegisterClassEx(&WindowClass);
 
-    std::wstring MainWindowTitleWS(Injector::UI::MainWindowTitle.begin(), Injector::UI::MainWindowTitle.end());
-    Injector::UI::MainWindowHandle = CreateWindow(WindowClass.lpszClassName, MainWindowTitleWS.c_str(), WS_CAPTION | WS_SYSMENU, 100, 100, 500, 188, NULL, NULL, WindowClass.hInstance, NULL);
+    Injector::UI::MainWindowHandle = CreateWindow(WindowClass.lpszClassName, L"Simple Module Injector", WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, 100, 100, 500, 188, NULL, NULL, WindowClass.hInstance, NULL);
 
     if (!Injector::UI::CreateDirectXDeviceAndSwapChain(Injector::UI::MainWindowHandle))
     {
@@ -25,11 +24,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     io.IniFilename = NULL;
     ImGui_ImplWin32_Init(Injector::UI::MainWindowHandle);
     ImGui_ImplDX11_Init(Injector::UI::g_pd3dDevice, Injector::UI::g_pd3dDeviceContext);
-
     io.Fonts->AddFontFromFileTTF(strcat(getenv("SystemDrive"), "\\Windows\\Fonts\\Verdana.ttf"), 23.f);
 
-    MSG Message;
-    ZeroMemory(&Message, sizeof(Message));
+    //Window Loop
+    MSG Message = { 0 };
     while (Message.message != WM_QUIT)
     {
         if (PeekMessage(&Message, NULL, 0U, 0U, PM_REMOVE)) { TranslateMessage(&Message); DispatchMessage(&Message); continue; }
@@ -53,14 +51,14 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         //Show Popup Notification Loop
         if (!Injector::UI::PopupNotificationMessage.empty())
         {
-            ImGui::OpenPopup("Alert###PopupNotification");
-            if (ImGui::BeginPopupModal("Alert###PopupNotification", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar))
+            ImGui::OpenPopup("###PopupNotification");
+            if (ImGui::BeginPopupModal("###PopupNotification", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar))
             {
                 ImGui::TextWrapped(Injector::UI::PopupNotificationMessage.c_str());
                 if (ImGui::Button("OK", ImVec2(400, 0))) 
                 {
                     Injector::UI::PopupNotificationMessage.clear();
-                    ImGui::CloseCurrentPopup(); 
+                    ImGui::CloseCurrentPopup();
                 }
             }
         }
@@ -68,7 +66,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         //ImGui Window Setup
         ImGui::SetNextWindowSize(ImVec2(500, 149));
         ImGui::SetNextWindowPos(ImVec2(0, 0));
-        ImGui::Begin("##MainWindow", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
+        ImGui::Begin("MainWindow", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
  
         //Module Select Section
         ImGui::Text("Module Name:");
@@ -86,7 +84,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
                 }
                 else
                 {
-                    Injector::UI::PopupNotificationMessage = "Selected file is not an injectable executable";
+                    Injector::UI::PopupNotificationMessage = "Selected file is not an injectable & valid NT executable";
                 }
             }
         }
@@ -97,7 +95,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         ImGui::PushItemWidth(292);
         ImGui::InputText("##ProcessNameOrIDInput", Injector::UI::TargetProcessNameOrIDBufferInput, IM_ARRAYSIZE(Injector::UI::TargetProcessNameOrIDBufferInput), ImGuiInputTextFlags_CharsNoBlank);
         ImGui::Dummy(ImVec2(0, 5));
-        if (ImGui::Button("Inject", ImVec2(470, 35)))
+        if (ImGui::Button("Inject module", ImVec2(470, 35)))
         {
             if (!Injector::UI::SelectedModuleFile)
             {
@@ -126,14 +124,14 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         }
         std::string VersionFooter = "v" + SMI_BUILD;
         ImGui::Text(VersionFooter.c_str());
-        ImGui::SameLine(ImGui::GetWindowWidth() - 87);
+        ImGui::SameLine(ImGui::GetWindowWidth() - 85);
         if (ImGui::Button("About"))
         {
             ImGui::OpenPopup("About SMI###AboutPopup");
         }
         if (ImGui::BeginPopupModal("About SMI###AboutPopup", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar))
         {
-            std::string AuthorText = "Author: HatchesPls\nCompile Date & Time: " + (std::string)__DATE__ + " " + (std::string)__TIME__;
+            std::string AuthorText = "Author: HatchesPls\nCompiled: " + (std::string)__DATE__ + " " + (std::string)__TIME__ + "\nGithub: https://git.io/J0HCq";
             ImGui::TextWrapped(AuthorText.c_str());
             if (ImGui::Button("Close", ImVec2(500, 0)))
             {

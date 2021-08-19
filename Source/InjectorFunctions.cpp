@@ -33,7 +33,7 @@ void Injector::InjectorFunctions::InjectModule(std::string ModulePath, std::wstr
         }
         else
         {
-            Injector::UI::PopupNotificationMessage = "OpenProcess Failed. Try to run SMI elevated?";
+            Injector::UI::PopupNotificationMessage = "OpenProcess() Failed. Try to run SMI elevated?";
         }
         return;
     }
@@ -42,14 +42,14 @@ void Injector::InjectorFunctions::InjectModule(std::string ModulePath, std::wstr
     LPVOID Memory = LPVOID(VirtualAllocEx(Process, nullptr, MAX_PATH, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE));
     if (!Memory)
     {
-        Injector::UI::PopupNotificationMessage = "VirtualAllocEx Failed";
+        Injector::UI::PopupNotificationMessage = "VirtualAllocEx() Failed";
         return;
     }
 
     //Write Module Name To Target Process
     if (!WriteProcessMemory(Process, Memory, ModulePath.c_str(), MAX_PATH, nullptr))
     {
-        Injector::UI::PopupNotificationMessage = "WriteProcessMemory Failed";
+        Injector::UI::PopupNotificationMessage = "WriteProcessMemory() Failed";
         return;
     }
 
@@ -57,7 +57,7 @@ void Injector::InjectorFunctions::InjectModule(std::string ModulePath, std::wstr
     HANDLE RemoteThreadHandle = CreateRemoteThread(Process, nullptr, NULL, LPTHREAD_START_ROUTINE(LoadLibraryA), Memory, NULL, nullptr);
     if (!RemoteThreadHandle)
     {
-        Injector::UI::PopupNotificationMessage = "CreateRemoteThread Failed";
+        Injector::UI::PopupNotificationMessage = "CreateRemoteThread() Failed";
         return;
     }
 
@@ -65,7 +65,7 @@ void Injector::InjectorFunctions::InjectModule(std::string ModulePath, std::wstr
     CloseHandle(RemoteThreadHandle);
     CloseHandle(Process);
 
-    Injector::UI::PopupNotificationMessage = "Module Successfully Injected In Target Process";
+    Injector::UI::PopupNotificationMessage = "Module Successfully Injected";
 }
 
 DWORD Injector::InjectorFunctions::GetProcessIDByName(const std::wstring& ProcessName)

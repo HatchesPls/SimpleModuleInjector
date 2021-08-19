@@ -6,7 +6,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     RegisterClassEx(&WindowClass);
 
     std::wstring MainWindowTitleWS(Injector::UI::MainWindowTitle.begin(), Injector::UI::MainWindowTitle.end());
-    Injector::UI::MainWindowHandle = CreateWindow(WindowClass.lpszClassName, MainWindowTitleWS.c_str(), WS_CAPTION | WS_SYSMENU, 100, 100, 500, 184, NULL, NULL, WindowClass.hInstance, NULL);
+    Injector::UI::MainWindowHandle = CreateWindow(WindowClass.lpszClassName, MainWindowTitleWS.c_str(), WS_CAPTION | WS_SYSMENU, 100, 100, 500, 188, NULL, NULL, WindowClass.hInstance, NULL);
 
     if (!Injector::UI::CreateDirectXDeviceAndSwapChain(Injector::UI::MainWindowHandle))
     {
@@ -66,7 +66,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         }
 
         //ImGui Window Setup
-        ImGui::SetNextWindowSize(ImVec2(500, 145));
+        ImGui::SetNextWindowSize(ImVec2(500, 149));
         ImGui::SetNextWindowPos(ImVec2(0, 0));
         ImGui::Begin("##MainWindow", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
  
@@ -106,19 +106,40 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
             else
             {
                 std::string TargetProcessNameString(Injector::UI::TargetProcessNameOrIDBufferInput);
-                if (std::all_of(TargetProcessNameString.begin(), TargetProcessNameString.end(), isdigit))
+                if (!TargetProcessNameString.empty())
                 {
-                    Injector::InjectorFunctions::InjectModule(Injector::UI::SelectedModuleFile, L"", std::stoi(TargetProcessNameString));
+                    if (std::all_of(TargetProcessNameString.begin(), TargetProcessNameString.end(), isdigit))
+                    {
+                        Injector::InjectorFunctions::InjectModule(Injector::UI::SelectedModuleFile, L"", std::stoi(TargetProcessNameString));
+                    }
+                    else
+                    {
+                        std::wstring ProcessNameWS(TargetProcessNameString.begin(), TargetProcessNameString.end());
+                        Injector::InjectorFunctions::InjectModule(Injector::UI::SelectedModuleFile, ProcessNameWS, NULL);
+                    }
                 }
                 else
                 {
-                    std::wstring ProcessNameWS(TargetProcessNameString.begin(), TargetProcessNameString.end());
-                    Injector::InjectorFunctions::InjectModule(Injector::UI::SelectedModuleFile, ProcessNameWS, NULL);
+                    Injector::UI::PopupNotificationMessage = "You must provide a process name/id";
                 }
             }
         }
         std::string VersionFooter = "v" + SMI_BUILD;
         ImGui::Text(VersionFooter.c_str());
+        ImGui::SameLine(ImGui::GetWindowWidth() - 87);
+        if (ImGui::Button("About"))
+        {
+            ImGui::OpenPopup("About SMI###AboutPopup");
+        }
+        if (ImGui::BeginPopupModal("About SMI###AboutPopup", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar))
+        {
+            std::string AuthorText = "Author: HatchesPls\nCompile Date & Time: " + (std::string)__DATE__ + " " + (std::string)__TIME__;
+            ImGui::TextWrapped(AuthorText.c_str());
+            if (ImGui::Button("Close", ImVec2(500, 0)))
+            {
+                ImGui::CloseCurrentPopup();
+            }
+        }
 
         ImGui::End();
         ImGui::Render();

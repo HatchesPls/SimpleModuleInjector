@@ -12,6 +12,13 @@
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
 
+/////////////////////////////////////////////////////////////////////////////
+// Dutch (Netherlands) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NLD)
+LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
+#pragma code_page(1252)
+
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -44,8 +51,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,3
- PRODUCTVERSION 1,0,0,3
+ FILEVERSION 1,1,0,0
+ PRODUCTVERSION 1,1,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -62,12 +69,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "N/A"
             VALUE "FileDescription", "Simple Module Injector for Microsoft Windows "
-            VALUE "FileVersion", "1.0.0.3"
+            VALUE "FileVersion", "1.1.0.0"
             VALUE "InternalName", "SimpleModuleInjector.exe"
             VALUE "LegalCopyright", "Copyright (C) 2021"
             VALUE "OriginalFilename", "SimpleModuleInjector.exe"
             VALUE "ProductName", "Simple Module Injector"
-            VALUE "ProductVersion", "1.0.0.3"
+            VALUE "ProductVersion", "1.1.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -85,6 +92,8 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_ICON1               ICON                    "Icon.ico"
+
+#endif    // Dutch (Netherlands) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

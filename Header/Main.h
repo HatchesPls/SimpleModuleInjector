@@ -16,7 +16,7 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "Shlwapi.lib")
 
-static const std::string SMI_BUILD = "1.1.0.0";
+static const std::string SMI_BUILD = "1.1.0.1";
 
 namespace Injector
 {

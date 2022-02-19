@@ -6,7 +6,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     WNDCLASSEX WindowClass = { sizeof(WNDCLASSEX), CS_CLASSDC, UI::WndProc, 0L, 0L, GetModuleHandle(NULL), LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1)), NULL, NULL, NULL, _T("SMI_MainWindow"), NULL };
     RegisterClassEx(&WindowClass);
 
-    UI::MainWindowHandle = CreateWindow(WindowClass.lpszClassName, L"Simple Module Injector", WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, 100, 100, 500, 188, NULL, NULL, WindowClass.hInstance, NULL);
+    std::string WindowTitle = "Simple Module Injector - v" + SMI_BUILD;
+    std::wstring WindowTitleWString = std::wstring(WindowTitle.begin(), WindowTitle.end());
+    UI::MainWindowHandle = CreateWindow(WindowClass.lpszClassName, WindowTitleWString.c_str(), WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, 100, 100, 500, 188, NULL, NULL, WindowClass.hInstance, NULL);
 
     if (!UI::CreateDirectXDeviceAndSwapChain(UI::MainWindowHandle))
     {
@@ -78,7 +80,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
                 }
                 else
                 {
-                    UI::PopupNotificationMessage = "Selected file is not an valid NT executable";
+                    UI::PopupNotificationMessage = "Selected file is not a valid NT executable";
                 }
             }
         }
@@ -116,10 +118,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
                 }
             }
         }
-        std::string VersionFooter = "v" + SMI_BUILD;
-        ImGui::Text(VersionFooter.c_str());
-        ImGui::SameLine(ImGui::GetWindowWidth() - 85);
-        if (ImGui::Button("About"))
+        if (ImGui::Button("About", ImVec2(470, 30)))
         {
             ImGui::OpenPopup("About SMI###AboutPopup");
         }

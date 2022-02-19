@@ -38,7 +38,7 @@ namespace Injector
 		extern char* SelectedModuleFile;
 		static char TargetProcessNameOrIDBufferInput[51];
 		extern std::string PopupNotificationMessage;
-		static HWND MainWindowHandle;
+		extern HWND MainWindowHandle;
 		LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 		bool CreateDirectXDeviceAndSwapChain(HWND hWnd);

@@ -2,13 +2,7 @@
 
 void Injector::InjectorFunctions::Loop()
 {
-    if (UI::SelectedModuleFile != NULL)
-    {
-        if (!FileOrDirectoryExists(UI::SelectedModuleFile))
-        {
-            UI::SelectedModuleFile = NULL;
-        }
-    }
+    
 }
 
 bool Injector::InjectorFunctions::FileOrDirectoryExists(const std::string& fileName)
@@ -22,6 +16,12 @@ bool Injector::InjectorFunctions::FileOrDirectoryExists(const std::string& fileN
 
 void Injector::InjectorFunctions::InjectModule(std::string ModulePath, std::wstring ProcessName, int ProcessID)
 {
+    if (!FileOrDirectoryExists(UI::SelectedModuleFile))
+    {
+        UI::SelectedModuleFile = NULL;
+        return;
+    }
+
     DWORD TargetProcessID = ProcessName.empty() ? ProcessID : GetProcessIDByName(ProcessName);
     if (!TargetProcessID)
     {

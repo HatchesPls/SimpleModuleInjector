@@ -1,5 +1,6 @@
 #include "Header/Main.h"
 
+HWND Injector::UI::MainWindowHandle = NULL;
 ID3D11Device* Injector::UI::g_pd3dDevice = NULL;
 IDXGISwapChain* Injector::UI::g_pSwapChain = NULL;
 ID3D11DeviceContext* Injector::UI::g_pd3dDeviceContext = NULL;

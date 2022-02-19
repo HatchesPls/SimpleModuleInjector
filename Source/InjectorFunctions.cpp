@@ -1,10 +1,5 @@
 #include "Header/Main.h"
 
-void Injector::InjectorFunctions::Loop()
-{
-    
-}
-
 bool Injector::InjectorFunctions::FileOrDirectoryExists(const std::string& fileName)
 {
     if (std::filesystem::exists(fileName))
@@ -127,16 +122,14 @@ bool Injector::InjectorFunctions::FileHasDOSSignature(char* TargetFilePath)
 
             if (dosHeader)
             {
+                CloseHandle(hFile);
+                CloseHandle(hMapObject);
                 if (dosHeader->e_magic == IMAGE_DOS_SIGNATURE)
-                {
-                    CloseHandle(hFile);
-                    CloseHandle(hMapObject);
+                {  
                     return true;
                 }
                 else
                 {
-                    CloseHandle(hFile);
-                    CloseHandle(hMapObject);
                     return false;
                 }
             }

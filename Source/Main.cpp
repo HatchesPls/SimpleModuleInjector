@@ -33,7 +33,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     MSG Message = { 0 };
     while (Message.message != WM_QUIT)
     {
-        InjectorFunctions::Loop();
         if (PeekMessage(&Message, NULL, 0U, 0U, PM_REMOVE)) { TranslateMessage(&Message); DispatchMessage(&Message); continue; }
 
         //Start ImGui Frame
@@ -95,7 +94,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         {
             if (!UI::SelectedModuleFile)
             {
-               UI::PopupNotificationMessage = "You must select a module to inject";
+               UI::PopupNotificationMessage = "You must select a module first";
             }
             else
             {

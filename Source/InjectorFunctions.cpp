@@ -14,6 +14,7 @@ void Injector::InjectorFunctions::InjectModule(std::string ModulePath, std::wstr
     if (!FileOrDirectoryExists(UI::SelectedModuleFile))
     {
         UI::SelectedModuleFile = NULL;
+        UI::PopupNotificationMessage = "Selected module was deleted";
         return;
     }
 

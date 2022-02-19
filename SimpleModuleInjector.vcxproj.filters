@@ -71,12 +71,5 @@
     <ClInclude Include="ThirdParty\ImGui\imstb_truetype.h">
       <Filter>ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="SimpleModuleInjector.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Icon.ico" />
   </ItemGroup>
 </Project>

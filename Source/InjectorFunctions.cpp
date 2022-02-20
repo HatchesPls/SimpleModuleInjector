@@ -30,7 +30,7 @@ void Injector::InjectorFunctions::InjectModule(std::string ModulePath, std::wstr
     {
         if (GetLastError() == ERROR_INVALID_PARAMETER)
         {
-            Injector::UI::PopupNotificationMessage = "Invalid Process ID";
+            Injector::UI::PopupNotificationMessage = "Process ID does not exist";
         }
         else
         {

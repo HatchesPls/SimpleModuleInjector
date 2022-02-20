@@ -90,7 +90,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         ImGui::PushItemWidth(292);
         ImGui::InputText("##ProcessNameOrIDInput", UI::TargetProcessNameOrIDBufferInput, IM_ARRAYSIZE(UI::TargetProcessNameOrIDBufferInput), ImGuiInputTextFlags_CharsNoBlank);
         ImGui::Dummy(ImVec2(0, 5));
-        if (ImGui::Button("Inject module", ImVec2(470, 35)))
+        if (ImGui::Button("Inject Module", ImVec2(470, 35)))
         {
             if (!UI::SelectedModuleFile)
             {
@@ -103,7 +103,14 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
                 {
                     if (std::all_of(TargetProcessNameString.begin(), TargetProcessNameString.end(), isdigit))
                     {
-                        InjectorFunctions::InjectModule(UI::SelectedModuleFile, L"", std::stoi(TargetProcessNameString));
+                        try
+                        {
+                            InjectorFunctions::InjectModule(UI::SelectedModuleFile, L"", std::stoi(TargetProcessNameString));
+                        }
+                        catch (...) 
+                        {
+                            Injector::UI::PopupNotificationMessage = "Invalid Process ID";
+                        }
                     }
                     else
                     {

@@ -27,7 +27,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     io.IniFilename = NULL;
     ImGui_ImplWin32_Init(UI::MainWindowHandle);
     ImGui_ImplDX11_Init(UI::g_pd3dDevice, UI::g_pd3dDeviceContext);
-    io.Fonts->AddFontFromFileTTF(strcat(getenv("SystemDrive"), "\\Windows\\Fonts\\Verdana.ttf"), 23.f);
+    std::string FontLocation = std::getenv("SystemDrive") + (std::string)"\\Windows\\Fonts\\Verdana.ttf";
+    io.Fonts->AddFontFromFileTTF(FontLocation.c_str(), 23.f);
 
     //Window Loop
     MSG Message = { 0 };
